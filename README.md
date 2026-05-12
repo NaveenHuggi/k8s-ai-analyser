@@ -49,6 +49,37 @@ Our system collects, analyzes, and correlates real-time resource consumption of 
 
 ---
 
+## 🏗️ Architecture Diagram
+
+```mermaid
+graph TD
+    subgraph Kubernetes Cluster
+        P1[Pod A] --> PVC[Shared Volume]
+        P2[Pod B] --> PVC
+        P3[Pod C]
+        MS[Metrics Server]
+    end
+
+    subgraph Backend / Data Collection
+        KC[K8s API Client] -->|Fetch Events/Resources| MS
+        KC -->|Fetch Configs/States| P1
+    end
+
+    subgraph Multi-Agent AI Engine
+        KC --> |Raw Data| Crew[Agent Orchestrator]
+        Crew --> A1[Resource Profiler Agent]
+        Crew --> A2[Dependency Mapper Agent]
+        Crew --> A3[Insights Synthesizer Agent]
+    end
+
+    subgraph Frontend
+        Crew -->|AI Insights & Correlations| DB[Streamlit Dashboard]
+        KC -->|Raw Metrics Stream| DB
+    end
+```
+
+---
+
 ## Features
 
 - **Real-time resource discovery** — CPU, memory, PVC status, events, pod phases across all namespaces
