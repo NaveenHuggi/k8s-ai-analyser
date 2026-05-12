@@ -1,0 +1,50 @@
+# ============================================================
+# namespaces.yaml
+# Creates the 5 namespaces used in this project demo.
+# Apply with: kubectl apply -f k8s/namespaces.yaml
+# ============================================================
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: production
+  labels:
+    env: production
+    managed-by: k8s-ai-analyzer
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: monitoring
+  labels:
+    env: monitoring
+    managed-by: k8s-ai-analyzer
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: data-processing
+  labels:
+    env: data
+    managed-by: k8s-ai-analyzer
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: storage
+  labels:
+    env: storage
+    managed-by: k8s-ai-analyzer
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  labels:
+    env: dev
+    managed-by: k8s-ai-analyzer

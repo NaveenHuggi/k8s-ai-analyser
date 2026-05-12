@@ -1,0 +1,64 @@
+# ============================================================
+# rbac.yaml
+# Creates a ServiceAccount + ClusterRole + ClusterRoleBinding
+# so the backend can read pod/metrics/PVC/events data from
+# all namespaces without needing cluster-admin privileges.
+#
+# Apply with: kubectl apply -f k8s/rbac.yaml
+# ============================================================
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: k8s-ai-analyzer-sa
+  namespace: default
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: k8s-ai-analyzer-reader
+rules:
+  # Core API - pods, PVCs, events, namespaces, nodes, services
+  - apiGroups: [""]
+    resources:
+      - pods
+      - persistentvolumeclaims
+      - persistentvolumes
+      - events
+      - namespaces
+      - nodes
+      - services
+      - endpoints
+    verbs: ["get", "list", "watch"]
+
+  # Apps API - deployments, replicasets
+  - apiGroups: ["apps"]
+    resources:
+      - deployments
+      - replicasets
+      - statefulsets
+      - daemonsets
+    verbs: ["get", "list", "watch"]
+
+  # Metrics API - live CPU/memory (requires metrics-server)
+  - apiGroups: ["metrics.k8s.io"]
+    resources:
+      - pods
+      - nodes
+    verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: k8s-ai-analyzer-binding
+subjects:
+  - kind: ServiceAccount
+    name: k8s-ai-analyzer-sa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: k8s-ai-analyzer-reader
+  apiGroup: rbac.authorization.k8s.io
